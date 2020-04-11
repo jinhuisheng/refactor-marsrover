@@ -18,7 +18,7 @@ public class JsonMatchers {
         };
     }
 
-    private static <T> Object deserializeBody(Class<T> type, MvcResult result) throws Exception {
+    public static <T> T deserializeBody(Class<T> type, MvcResult result) throws Exception {
         String body = result.getResponse().getContentAsString();
         ObjectMapper om = new ObjectMapper();
         return om.readValue(body, type);
