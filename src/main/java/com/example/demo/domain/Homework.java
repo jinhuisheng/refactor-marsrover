@@ -17,10 +17,10 @@ public class Homework {
     private String answer;
     private Integer correct;
 
-    public Homework(String question, String answer, Boolean correct) {
+    public Homework(String studentId, String question, String answer, Boolean correct) {
+        this.studentId = Integer.parseInt(studentId);
         this.question = question;
         this.answer = answer;
-        this.studentId = 1;
         this.correct = correct ? 1 : 0;
     }
 

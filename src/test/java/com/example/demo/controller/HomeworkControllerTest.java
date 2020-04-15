@@ -31,7 +31,7 @@ public class HomeworkControllerTest {
     HomeworkRepository homeworkRepository;
 
     @Test
-    @WithMockUser(value = "student", roles = "STUDENT")
+    @WithMockUser(username = "13", roles = "STUDENT")
     void 作业保存到数据库() throws Exception {
         SubmitHomeworkCommand submitHomeworkCommand = new SubmitHomeworkCommand("1", "1");
         mvc.perform(JsonRequestBuilders.postJson("/homework", submitHomeworkCommand)).andExpect(status().isOk());
@@ -54,7 +54,7 @@ public class HomeworkControllerTest {
     }
 
     @Test
-    @WithMockUser(value = "student", roles = "STUDENT")
+    @WithMockUser(username = "15", roles = "STUDENT")
     void 提交作业返回作业结果() throws Exception {
         SubmitHomeworkCommand submitHomeworkCommand = new SubmitHomeworkCommand("1", "1");
         MvcResult mvcResult = mvc.perform(JsonRequestBuilders.postJson("/homework", submitHomeworkCommand))
