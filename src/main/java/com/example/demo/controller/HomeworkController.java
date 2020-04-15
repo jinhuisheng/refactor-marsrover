@@ -5,10 +5,7 @@ import com.example.demo.domain.HomeworkRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -25,13 +22,13 @@ public class HomeworkController {
         this.homeworkRepository = homeworkRepository;
     }
 
-    @PostMapping
+    @PostMapping("/{answer}")
     @PreAuthorize("hasRole('STUDENT')")
-    public SubmitHomeWorkResult submit(@RequestBody @Valid SubmitHomeworkCommand submitHomeworkCommand) {
-        Boolean correct = verifyAnswer(submitHomeworkCommand.getQuestion(), submitHomeworkCommand.getAnswer());
-        Homework homework = new Homework(getStudentId(), submitHomeworkCommand.getQuestion(), submitHomeworkCommand.getAnswer(), correct);
+    public SubmitHomeWorkResult submit(@PathVariable String answer) {
+        Boolean correct = verifyAnswer(getStudentId(), answer);
+        Homework homework = new Homework(getStudentId(), "fizz-buzz-number", answer, correct);
         homeworkRepository.save(homework);
-        return new SubmitHomeWorkResult(submitHomeworkCommand.getAnswer(), correct);
+        return new SubmitHomeWorkResult(answer, correct);
     }
 
     private String getStudentId() {

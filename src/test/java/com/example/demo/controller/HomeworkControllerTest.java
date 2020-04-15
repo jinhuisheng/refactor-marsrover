@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -33,36 +34,22 @@ public class HomeworkControllerTest {
     @Test
     @WithMockUser(username = "13", roles = "STUDENT")
     void 作业保存到数据库() throws Exception {
-        SubmitHomeworkCommand submitHomeworkCommand = new SubmitHomeworkCommand("1", "1");
-        mvc.perform(JsonRequestBuilders.postJson("/homework", submitHomeworkCommand)).andExpect(status().isOk());
+        SubmitHomeworkCommand submitHomeworkCommand = new SubmitHomeworkCommand("1");
+//        mvc.perform(JsonRequestBuilders.postJson().postJson("/homework/{}", submitHomeworkCommand)).andExpect(status().isOk());
+        mvc.perform(post("/homework/{answer}", "13")).andExpect(status().isOk());
         List<Homework> all = homeworkRepository.findAll();
         assertThat(all.size()).isEqualTo(1);
     }
 
     @Test
-    void 参数为空报错() throws Exception {
-        SubmitHomeworkCommand submitHomeworkCommand = new SubmitHomeworkCommand();
-        mvc.perform(JsonRequestBuilders.postJson("/homework", submitHomeworkCommand))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void 问题参数不为整数报错() throws Exception {
-        SubmitHomeworkCommand submitHomeworkCommand = new SubmitHomeworkCommand("fizz", "1");
-        mvc.perform(JsonRequestBuilders.postJson("/homework", submitHomeworkCommand))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(username = "15", roles = "STUDENT")
+    @WithMockUser(username = "13", roles = "STUDENT")
     void 提交作业返回作业结果() throws Exception {
-        SubmitHomeworkCommand submitHomeworkCommand = new SubmitHomeworkCommand("1", "1");
-        MvcResult mvcResult = mvc.perform(JsonRequestBuilders.postJson("/homework", submitHomeworkCommand))
+        MvcResult mvcResult = mvc.perform(post("/homework/{answer}", "Fizz"))
                 .andExpect(status().isOk())
                 .andReturn();
         SubmitHomeWorkResult submitHomeWorkResult = JsonMatchers.deserializeBody(SubmitHomeWorkResult.class, mvcResult);
 
-        assertThat(submitHomeWorkResult.getAnswer()).isEqualTo("1");
+        assertThat(submitHomeWorkResult.getAnswer()).isEqualTo("Fizz");
         assertThat(submitHomeWorkResult.getCorrect()).isEqualTo(true);
     }
 
