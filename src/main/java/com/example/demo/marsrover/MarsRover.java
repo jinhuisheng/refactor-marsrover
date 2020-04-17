@@ -1,4 +1,6 @@
-package com.example.demo;
+package com.example.demo.marsrover;
+
+import com.example.demo.marsrover.command.Command;
 
 import java.util.Arrays;
 
@@ -18,6 +20,9 @@ public class MarsRover {
     }
 
     public void execute(String commands) {
+        if (commands.isEmpty()) {
+            return;
+        }
         Arrays.stream(commands.split(""))
                 .forEach(this::executeCommand);
     }

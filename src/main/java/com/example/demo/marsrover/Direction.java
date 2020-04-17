@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.marsrover;
 
 import java.util.Arrays;
 

@@ -1,4 +1,6 @@
-package com.example.demo;
+package com.example.demo.marsrover.command;
+
+import com.example.demo.marsrover.MarsRover;
 
 /**
  * @author huisheng.jin

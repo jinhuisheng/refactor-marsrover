@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import com.example.demo.marsrover.Direction;
+import com.example.demo.marsrover.MarsRover;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @date 2020/4/16.
  */
 public class MarsRoverTest {
-//    @Test
+    //    @Test
 //    void demo() {
 //        MarsRover marsRover = new MarsRover(0, 0, "N");
 //        marsRover.send("F");
@@ -33,7 +36,7 @@ public class MarsRoverTest {
 
     @ParameterizedTest(name = "{index} 当前位置({0},{1}),{2},执行命令 {3} 后的位置是（{4},{5}),{6}")
     @MethodSource("provideExecuteCommandsArguments")
-    void move(int currentX, int currentY, Direction currentDirection, String commands, int expectedX, int expectedY, Direction expectedDirection) {
+    void 执行指令(int currentX, int currentY, Direction currentDirection, String commands, int expectedX, int expectedY, Direction expectedDirection) {
         MarsRover marsRover = new MarsRover(currentX, currentY, currentDirection);
         marsRover.execute(commands);
         assertThat(marsRover.getX()).isEqualTo(expectedX);
@@ -44,6 +47,7 @@ public class MarsRoverTest {
     private static Stream<Arguments> provideExecuteCommandsArguments() {
 
         return Stream.of(
+                Arguments.of(0, 0, Direction.NORTH, "", 0, 0, Direction.NORTH),
                 //左转
                 Arguments.of(0, 0, Direction.NORTH, "L", 0, 0, Direction.WEST),
                 Arguments.of(0, 0, Direction.NORTH, "LL", 0, 0, Direction.SOUTH),
@@ -76,4 +80,11 @@ public class MarsRoverTest {
         );
     }
 
+    @Test
+    void 指令不存在() {
+        MarsRover marsRover = new MarsRover(0, 0, Direction.NORTH);
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class
+                , () -> marsRover.execute("X"));
+        assertThat(exception.getMessage()).isEqualTo("非法指令");
+    }
 }

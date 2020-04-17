@@ -1,6 +1,9 @@
-package com.example.demo;
+package com.example.demo.marsrover;
+
+import com.example.demo.marsrover.command.*;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * @author huisheng.jin
@@ -18,7 +21,11 @@ public class Commands {
         commands.put("R", new TurnRightCommand());
     }
 
-    public static Command getCommand(String command) {
-        return commands.get(command);
+    public static Command getCommand(String commandName) {
+        Command command = commands.get(commandName);
+        if (Objects.isNull(command)) {
+            throw new IllegalArgumentException("非法指令");
+        }
+        return command;
     }
 }
