@@ -1,12 +1,10 @@
 package com.example.demo;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,86 +14,66 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @date 2020/4/16.
  */
 public class MarsRoverTest {
-
-    private MarsRover marsRover;
-
-    @BeforeEach
-    void setUp() {
-        marsRover = new MarsRover(0, 0, Direction.NORTH);
-    }
-
+//    @Test
+//    void demo() {
+//        MarsRover marsRover = new MarsRover(0, 0, "N");
+//        marsRover.send("F");
+//        assertThat(marsRover.getX()).isEqualTo(0);
+//        assertThat(marsRover.getY()).isEqualTo(1);
+//        assertThat(marsRover.getDirection()).isEqualTo("N");
+//    }
+//
     @Test
     void 初始化火星车_0_0_N_并正确获取火星车位置() {
+        MarsRover marsRover = new MarsRover(0, 0, Direction.NORTH);
         assertThat(marsRover.getX()).isEqualTo(0);
         assertThat(marsRover.getY()).isEqualTo(0);
         assertThat(marsRover.getDirection()).isEqualTo(Direction.NORTH);
     }
 
-    @ParameterizedTest(name = "{index} 执行一批命令{0},得到结果为{1}")
-    @MethodSource("provideBaseInfoArguments")
-    void 初始信息_0_0_N的火星车_转向(String commands, Direction expectedDirection) {
+    @ParameterizedTest(name = "{index} 当前位置({0},{1}),{2},执行命令 {3} 后的位置是（{4},{5}),{6}")
+    @MethodSource("provideExecuteCommandsArguments")
+    void move(int currentX, int currentY, Direction currentDirection, String commands, int expectedX, int expectedY, Direction expectedDirection) {
+        MarsRover marsRover = new MarsRover(currentX, currentY, currentDirection);
         marsRover.execute(commands);
-        assertThat(marsRover.getX()).isEqualTo(0);
-        assertThat(marsRover.getY()).isEqualTo(0);
+        assertThat(marsRover.getX()).isEqualTo(expectedX);
+        assertThat(marsRover.getY()).isEqualTo(expectedY);
         assertThat(marsRover.getDirection()).isEqualTo(expectedDirection);
     }
 
-    private static Stream<Arguments> provideBaseInfoArguments() {
+    private static Stream<Arguments> provideExecuteCommandsArguments() {
+
         return Stream.of(
-                Arguments.of("L", Direction.WEST),
-                Arguments.of("LL", Direction.SOUTH),
-                Arguments.of("LLL", Direction.EAST),
-                Arguments.of("LLLL", Direction.NORTH),
-                Arguments.of("R", Direction.EAST),
-                Arguments.of("RR", Direction.SOUTH),
-                Arguments.of("RRR", Direction.WEST),
-                Arguments.of("RRRR", Direction.NORTH),
-                Arguments.of("RLLLR", Direction.WEST),
-                Arguments.of("LLLRLLLR", Direction.NORTH)
+                //左转
+                Arguments.of(0, 0, Direction.NORTH, "L", 0, 0, Direction.WEST),
+                Arguments.of(0, 0, Direction.NORTH, "LL", 0, 0, Direction.SOUTH),
+                Arguments.of(0, 0, Direction.NORTH, "LLL", 0, 0, Direction.EAST),
+                Arguments.of(0, 0, Direction.NORTH, "LLLL", 0, 0, Direction.NORTH),
+
+                //右转
+                Arguments.of(0, 0, Direction.NORTH, "R", 0, 0, Direction.EAST),
+                Arguments.of(0, 0, Direction.NORTH, "RR", 0, 0, Direction.SOUTH),
+                Arguments.of(0, 0, Direction.NORTH, "RRR", 0, 0, Direction.WEST),
+                Arguments.of(0, 0, Direction.NORTH, "RRRR", 0, 0, Direction.NORTH),
+                Arguments.of(0, 0, Direction.NORTH, "RLLLR", 0, 0, Direction.WEST),
+                Arguments.of(0, 0, Direction.NORTH, "LLLRLLLR", 0, 0, Direction.NORTH),
+
+                //前进
+                Arguments.of(0, 0, Direction.NORTH, "F", 0, 1, Direction.NORTH),
+                Arguments.of(0, 0, Direction.EAST, "F", 1, 0, Direction.EAST),
+                Arguments.of(0, 0, Direction.WEST, "F", -1, 0, Direction.WEST),
+                Arguments.of(0, 0, Direction.SOUTH, "F", 0, -1, Direction.SOUTH),
+
+                //后退
+                Arguments.of(0, 0, Direction.SOUTH, "B", 0, 1, Direction.SOUTH),
+                Arguments.of(0, 0, Direction.NORTH, "B", 0, -1, Direction.NORTH),
+                Arguments.of(0, 0, Direction.EAST, "B", -1, 0, Direction.EAST),
+                Arguments.of(0, 0, Direction.WEST, "B", 1, 0, Direction.WEST),
+
+                // 执行多种指令
+                Arguments.of(0, 0, Direction.NORTH, "FLB", 1, 1, Direction.WEST),
+                Arguments.of(0, 0, Direction.NORTH, "FRBLBBBB", -1, -3, Direction.NORTH)
         );
     }
 
-    @Test
-    void 初始化火星车_0_0_N_向前移动一步() {
-        marsRover.execute("F");
-        assertThat(marsRover.getX()).isEqualTo(0);
-        assertThat(marsRover.getY()).isEqualTo(1);
-        assertThat(marsRover.getDirection()).isEqualTo(Direction.NORTH);
-    }
-
-    @Test
-    void 初始化火星车_0_0_N_向前移动2步() {
-        marsRover.execute("FF");
-        assertThat(marsRover.getX()).isEqualTo(0);
-        assertThat(marsRover.getY()).isEqualTo(2);
-        assertThat(marsRover.getDirection()).isEqualTo(Direction.NORTH);
-    }
-
-    @Test
-    void 初始化火星车_0_0_S_向前移动一步() {
-        MarsRover marsRover = new MarsRover(0, 0, Direction.SOUTH);
-        marsRover.moveFront();
-        assertThat(marsRover.getX()).isEqualTo(0);
-        assertThat(marsRover.getY()).isEqualTo(-1);
-        assertThat(marsRover.getDirection()).isEqualTo(Direction.SOUTH);
-    }
-
-    @Test
-    void 初始化火星车_0_0_E_向前移动一步() {
-        MarsRover marsRover = new MarsRover(0, 0, Direction.EAST);
-        marsRover.moveFront();
-        assertThat(marsRover.getX()).isEqualTo(1);
-        assertThat(marsRover.getY()).isEqualTo(0);
-        assertThat(marsRover.getDirection()).isEqualTo(Direction.EAST);
-    }
-
-    @Test
-    void 初始化火星车_0_0_W_向前移动一步() {
-        MarsRover marsRover = new MarsRover(0, 0, Direction.WEST);
-        marsRover.moveFront();
-        assertThat(marsRover.getX()).isEqualTo(-1);
-        assertThat(marsRover.getY()).isEqualTo(0);
-        assertThat(marsRover.getDirection()).isEqualTo(Direction.WEST);
-    }
-//
 }

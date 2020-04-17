@@ -11,11 +11,20 @@ public class MarsRover {
     private Integer y;
     private Direction direction;
 
-    public MarsRover(Integer x, Integer y, Direction value) {
-
+    public MarsRover(Integer x, Integer y, Direction direction) {
         this.x = x;
         this.y = y;
-        this.direction = value;
+        this.direction = direction;
+    }
+
+    public void execute(String commands) {
+        Arrays.stream(commands.split(""))
+                .forEach(this::executeCommand);
+    }
+
+    private void executeCommand(String cmd) {
+        Command command = Commands.getCommand(cmd);
+        command.execute(this);
     }
 
     public Integer getX() {
@@ -38,27 +47,41 @@ public class MarsRover {
         return direction;
     }
 
-    public void execute(String commands) {
-        Arrays.stream(commands.split("")).forEach(cmd -> {
-            if (cmd.equals("R")) {
-                turnRight();
-            } else if (cmd.equals("L")) {
-                turnLeft();
-            } else if (cmd.equals("F")) {
-                moveFront();
-            }
-        });
+    public void moveBack() {
+        switch (this.direction) {
+            case NORTH:
+                this.y -= 1;
+                break;
+            case SOUTH:
+                this.y += 1;
+                break;
+            case EAST:
+                this.x -= 1;
+                break;
+            case WEST:
+                this.x += 1;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + this.direction);
+        }
     }
 
     public void moveFront() {
-        if (this.direction == Direction.NORTH) {
-            this.y += 1;
-        } else if (this.direction == Direction.SOUTH) {
-            this.y -= 1;
-        } else if (this.direction == Direction.EAST) {
-            this.x += 1;
-        } else if (this.direction == Direction.WEST) {
-            this.x -= 1;
+        switch (this.direction) {
+            case NORTH:
+                this.y += 1;
+                break;
+            case SOUTH:
+                this.y -= 1;
+                break;
+            case EAST:
+                this.x += 1;
+                break;
+            case WEST:
+                this.x -= 1;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + this.direction);
         }
     }
 }

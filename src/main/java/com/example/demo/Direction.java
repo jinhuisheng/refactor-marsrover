@@ -1,11 +1,19 @@
 package com.example.demo;
 
+import java.util.Arrays;
+
 /**
  * @author huisheng.jin
  * @date 2020/4/16.
  */
 public enum Direction {
-    EAST("N", "E", "S"), SOUTH("E", "S", "W"), WEST("S", "W", "N"), NORTH("W", "N", "E");
+    /**
+     *
+     */
+    EAST("N", "E", "S"),
+    SOUTH("E", "S", "W"),
+    WEST("S", "W", "N"),
+    NORTH("W", "N", "E");
 
     private String left;
     private String name;
@@ -18,12 +26,10 @@ public enum Direction {
     }
 
     public static Direction getValue(String name) {
-        for (Direction direction : Direction.values()) {
-            if (direction.getName().equals(name)) {
-                return direction;
-            }
-        }
-        return null;
+        return Arrays.stream(Direction.values())
+                .filter(direction -> direction.getName().equals(name))
+                .findFirst()
+                .get();
     }
 
     public String getName() {
