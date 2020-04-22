@@ -1,18 +1,21 @@
 package com.example.demo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * @author huisheng.jin
  * @date 2020/4/22.
  */
 public class MarsRover {
-    private final Integer x;
-    private final Integer y;
-    private Direction directionEnum;
+    private Integer x;
+    private Integer y;
+    private Direction direction;
 
-    public MarsRover(Integer x, Integer y, Direction directionEnum) {
+    public MarsRover(Integer x, Integer y, Direction direction) {
         this.x = x;
         this.y = y;
-        this.directionEnum = directionEnum;
+        this.direction = direction;
     }
 
     public Integer getX() {
@@ -24,20 +27,58 @@ public class MarsRover {
     }
 
     public void sendCommands(String commands) {
-        if (this.directionEnum == Direction.W) {
-            this.directionEnum = Direction.S;
-        } else if (this.directionEnum == Direction.S) {
-            this.directionEnum = Direction.E;
-        } else if (this.directionEnum == Direction.E) {
-            this.directionEnum = Direction.N;
-        } else if (this.directionEnum == Direction.N) {
-            this.directionEnum = Direction.W;
-        } else {
-            throw new IllegalStateException("Unexpected value: " + this.directionEnum);
+        Arrays.stream(commands.split(""))
+                .forEach(this::executeCommand);
+    }
+
+    private void executeCommand(String command) {
+//        List<Command> commands = new ArrayList<>();
+//        initCommands();
+//        TurnLeftCommand turnLeftCommand = new TurnLeftCommand(this);
+//        turnLeftCommand.execute();
+        switch (command) {
+            case "L":
+                turnLeft();
+                break;
+            case "R":
+                turnRight();
+                break;
+            case "F":
+                forward();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + command);
         }
     }
 
-    public Direction getDirectionEnum() {
-        return this.directionEnum;
+    private void forward() {
+        switch (direction) {
+            case S:
+                this.y -= 1;
+                break;
+            case N:
+                this.y += 1;
+                break;
+            case E:
+                this.x += 1;
+                break;
+            case W:
+                this.x -= 1;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + direction);
+        }
+    }
+
+    private void turnRight() {
+        this.direction = this.direction.right();
+    }
+
+    private void turnLeft() {
+        this.direction = this.direction.left();
+    }
+
+    public Direction getDirection() {
+        return this.direction;
     }
 }

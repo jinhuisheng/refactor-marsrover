@@ -1,6 +1,11 @@
 package com.example.demo;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,44 +28,46 @@ public class MarsRoverTest {
         MarsRover marsRover = new MarsRover(0, 0, Direction.N);
         assertThat(marsRover.getX()).isEqualTo(0);
         assertThat(marsRover.getY()).isEqualTo(0);
-        assertThat(marsRover.getDirectionEnum()).isEqualTo(Direction.N);
+        assertThat(marsRover.getDirection()).isEqualTo(Direction.N);
     }
 
-    @Test
-    void turn_left_once_is_W_when_current_direction_is_N() {
-        MarsRover marsRover = new MarsRover(0, 0, Direction.N);
-        marsRover.sendCommands("L");
-        assertThat(marsRover.getX()).isEqualTo(0);
-        assertThat(marsRover.getY()).isEqualTo(0);
-        assertThat(marsRover.getDirectionEnum()).isEqualTo(Direction.W);
+    @ParameterizedTest(name = "[{index}] current position ({0},{1},{2}),execute commands {3},result:({4},{5},{6})")
+    @MethodSource({"provideArguments"})
+    void assert_commands_execute_result(Integer currentX, Integer currentY, Direction currentDirection,
+                                        String commands,
+                                        Integer expectedX, Integer expectedY, Direction expectedDirection) {
+        MarsRover marsRover = new MarsRover(currentX, currentY, currentDirection);
+        marsRover.sendCommands(commands);
+        assertThat(marsRover.getX()).isEqualTo(expectedX);
+        assertThat(marsRover.getY()).isEqualTo(expectedY);
+        assertThat(marsRover.getDirection()).isEqualTo(expectedDirection);
     }
 
-    @Test
-    void turn_left_once_is_S_when_current_direction_is_W() {
-        MarsRover marsRover = new MarsRover(0, 0, Direction.W);
-        marsRover.sendCommands("L");
-        assertThat(marsRover.getX()).isEqualTo(0);
-        assertThat(marsRover.getY()).isEqualTo(0);
-        assertThat(marsRover.getDirectionEnum()).isEqualTo(Direction.S);
-    }
+    private static Stream<Arguments> provideArguments() {
+        return Stream.of(
+                // 左转
+                Arguments.of(0, 0, Direction.N, "L", 0, 0, Direction.W),
+                Arguments.of(0, 0, Direction.W, "L", 0, 0, Direction.S),
+                Arguments.of(0, 0, Direction.S, "L", 0, 0, Direction.E),
+                Arguments.of(0, 0, Direction.E, "L", 0, 0, Direction.N),
+                Arguments.of(0, 0, Direction.E, "LL", 0, 0, Direction.W),
 
-    @Test
-    void turn_left_once_is_E_when_current_direction_is_S() {
-        MarsRover marsRover = new MarsRover(0, 0, Direction.S);
-        marsRover.sendCommands("L");
-        assertThat(marsRover.getX()).isEqualTo(0);
-        assertThat(marsRover.getY()).isEqualTo(0);
-        assertThat(marsRover.getDirectionEnum()).isEqualTo(Direction.E);
-    }
+                //右转
+                Arguments.of(0, 0, Direction.N, "R", 0, 0, Direction.E),
+                Arguments.of(0, 0, Direction.W, "R", 0, 0, Direction.N),
+                Arguments.of(0, 0, Direction.S, "R", 0, 0, Direction.W),
+                Arguments.of(0, 0, Direction.E, "R", 0, 0, Direction.S),
+                Arguments.of(0, 0, Direction.E, "RR", 0, 0, Direction.W),
+                Arguments.of(0, 0, Direction.E, "RRRRRL", 0, 0, Direction.E),
 
-    @Test
-    void turn_left_once_is_N_when_current_direction_is_E() {
-        MarsRover marsRover = new MarsRover(0, 0, Direction.E);
-        marsRover.sendCommands("L");
-        assertThat(marsRover.getX()).isEqualTo(0);
-        assertThat(marsRover.getY()).isEqualTo(0);
-        assertThat(marsRover.getDirectionEnum()).isEqualTo(Direction.N);
-    }
+                //向前
+                Arguments.of(0, 0, Direction.N, "F", 0, 1, Direction.N),
+                Arguments.of(0, 0, Direction.S, "F", 0, -1, Direction.S),
+                Arguments.of(0, 0, Direction.E, "F", 1, 0, Direction.E),
+                Arguments.of(0, 0, Direction.W, "F", -1, 0, Direction.W)
 
+
+        );
+    }
 
 }
