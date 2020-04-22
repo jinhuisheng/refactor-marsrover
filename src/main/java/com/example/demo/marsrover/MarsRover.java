@@ -1,5 +1,7 @@
-package com.example.demo;
+package com.example.demo.marsrover;
 
+import com.example.demo.marsrover.command.Command;
+import com.example.demo.marsrover.command.Commands;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
@@ -17,18 +19,6 @@ public class MarsRover {
         this.x = x;
         this.y = y;
         this.direction = direction;
-    }
-
-    public Integer getX() {
-        return x;
-    }
-
-    public Integer getY() {
-        return y;
-    }
-
-    public Direction getDirection() {
-        return direction;
     }
 
 
@@ -57,14 +47,6 @@ public class MarsRover {
         }
     }
 
-    public void turnRight() {
-        this.direction = direction.right();
-    }
-
-    public void turnLeft() {
-        this.direction = direction.left();
-    }
-
     public void back() {
         if (this.direction == Direction.S) {
             this.y += 1;
@@ -77,4 +59,25 @@ public class MarsRover {
         }
 
     }
+
+    public void turnLeft() {
+        this.direction = direction.left();
+    }
+
+    public void turnRight() {
+        this.direction = direction.right();
+    }
+
+    public Integer getX() {
+        return x;
+    }
+
+    public Integer getY() {
+        return y;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
 }

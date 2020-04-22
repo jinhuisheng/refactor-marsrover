@@ -1,4 +1,4 @@
-package com.example.demo.marsrover;
+package com.example.demo.marsrover.command;
 
 import java.util.HashMap;
 import java.util.Objects;
