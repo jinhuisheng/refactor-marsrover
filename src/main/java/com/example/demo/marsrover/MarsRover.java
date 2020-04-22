@@ -1,6 +1,9 @@
-package com.example.demo;
+package com.example.demo.marsrover;
 
-import java.util.ArrayList;
+import com.example.demo.marsrover.command.Command;
+import com.example.demo.marsrover.command.Commands;
+import org.springframework.util.StringUtils;
+
 import java.util.Arrays;
 
 /**
@@ -18,40 +21,20 @@ public class MarsRover {
         this.direction = direction;
     }
 
-    public Integer getX() {
-        return x;
-    }
-
-    public Integer getY() {
-        return y;
-    }
-
     public void sendCommands(String commands) {
         Arrays.stream(commands.split(""))
                 .forEach(this::executeCommand);
     }
 
     private void executeCommand(String command) {
-//        List<Command> commands = new ArrayList<>();
-//        initCommands();
-//        TurnLeftCommand turnLeftCommand = new TurnLeftCommand(this);
-//        turnLeftCommand.execute();
-        switch (command) {
-            case "L":
-                turnLeft();
-                break;
-            case "R":
-                turnRight();
-                break;
-            case "F":
-                forward();
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + command);
+        if (StringUtils.isEmpty(command)) {
+            return;
         }
+        Command commandExecutor = Commands.getCommand(command);
+        commandExecutor.execute(this);
     }
 
-    private void forward() {
+    public void forward() {
         switch (direction) {
             case S:
                 this.y -= 1;
@@ -70,12 +53,39 @@ public class MarsRover {
         }
     }
 
-    private void turnRight() {
+    public void back() {
+        switch (this.direction) {
+            case S:
+                this.y += 1;
+                break;
+            case N:
+                this.y -= 1;
+                break;
+            case E:
+                this.x -= 1;
+                break;
+            case W:
+                this.x += 1;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + this.direction);
+        }
+    }
+
+    public void turnLeft() {
+        this.direction = this.direction.left();
+    }
+
+    public void turnRight() {
         this.direction = this.direction.right();
     }
 
-    private void turnLeft() {
-        this.direction = this.direction.left();
+    public Integer getX() {
+        return x;
+    }
+
+    public Integer getY() {
+        return y;
     }
 
     public Direction getDirection() {

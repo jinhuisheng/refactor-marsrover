@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import com.example.demo.marsrover.Direction;
+import com.example.demo.marsrover.MarsRover;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -43,6 +46,12 @@ public class MarsRoverTest {
         assertThat(marsRover.getDirection()).isEqualTo(expectedDirection);
     }
 
+    @Test
+    void throw_exception_when_command_is_not_exist() {
+        MarsRover marsRover = new MarsRover(0, 0, Direction.N);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> marsRover.sendCommands("X"));
+    }
+
     private static Stream<Arguments> provideArguments() {
         return Stream.of(
                 // 左转
@@ -64,10 +73,21 @@ public class MarsRoverTest {
                 Arguments.of(0, 0, Direction.N, "F", 0, 1, Direction.N),
                 Arguments.of(0, 0, Direction.S, "F", 0, -1, Direction.S),
                 Arguments.of(0, 0, Direction.E, "F", 1, 0, Direction.E),
-                Arguments.of(0, 0, Direction.W, "F", -1, 0, Direction.W)
+                Arguments.of(0, 0, Direction.W, "F", -1, 0, Direction.W),
 
+                //向后
+                Arguments.of(0, 0, Direction.N, "B", 0, -1, Direction.N),
+                Arguments.of(0, 0, Direction.S, "B", 0, 1, Direction.S),
+                Arguments.of(0, 0, Direction.E, "B", -1, 0, Direction.E),
+                Arguments.of(0, 0, Direction.W, "B", 1, 0, Direction.W),
 
+                //指令为空
+                Arguments.of(0, 0, Direction.W, "", 0, 0, Direction.W),
+
+                // 随机命令测试
+                Arguments.of(0, 0, Direction.W, "BFLLRFFF", 0, -3, Direction.S)
         );
+
     }
 
 }

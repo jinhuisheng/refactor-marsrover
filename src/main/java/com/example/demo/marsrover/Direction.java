@@ -1,21 +1,19 @@
-package com.example.demo;
+package com.example.demo.marsrover;
 
 /**
  * @author huisheng.jin
  * @date 2020/4/22.
  */
 public enum Direction {
-    N("W", "N", "E"),
-    S("E", "S", "W"),
-    E("N", "E", "S"),
-    W("S", "W", "N");
+    N("W", "E"),
+    S("E", "W"),
+    E("N", "S"),
+    W("S", "N");
     private String left;
-    private String name;
     private String right;
 
-    Direction(String left, String name, String right) {
+    Direction(String left, String right) {
         this.left = left;
-        this.name = name;
         this.right = right;
     }
 
