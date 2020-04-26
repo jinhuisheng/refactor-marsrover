@@ -18,7 +18,6 @@ public class MarsRoverTest {
 //        assertThat(marsRover.getDirection()).isEqualTo("S");
 //    }
 
-
     @Test
     void init_marsRover() {
         MarsRover marsRover = new MarsRover(0, 0, "N");
