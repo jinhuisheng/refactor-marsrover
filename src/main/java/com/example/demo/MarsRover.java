@@ -10,7 +10,6 @@ public class MarsRover {
     private String direction;
 
     public MarsRover(Integer x, Integer y, String direction) {
-
         this.x = x;
         this.y = y;
         this.direction = direction;
